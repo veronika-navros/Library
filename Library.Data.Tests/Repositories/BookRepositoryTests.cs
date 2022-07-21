@@ -44,4 +44,19 @@ public class BookRepositoryTests
         //assert
         result.Should().BeEquivalentTo(books);
     }
+
+    [Test]
+    public void Insert_ShouldReturnNewBookId()
+    {
+        //arrange
+        var mockSet = new Mock<DbSet<BookEntity>>();
+        _libraryContextMock.Setup(m => m.Books).Returns(mockSet.Object);
+        _libraryContextMock.Setup(m => m.Books.Add(It.IsAny<BookEntity>())).Returns((() => 4));
+        //act
+        var result = _sut.Insert(new BookEntity { Name = "name4", Author = "author4", Link = "link4" });
+        //assert
+        result.Should().Be(4);
+        mockSet.Verify(m => m.Add(It.IsAny<BookEntity>()), Times.Once());
+        _libraryContextMock.Verify(m => m.SaveChanges(), Times.Once());
+    }
 }
