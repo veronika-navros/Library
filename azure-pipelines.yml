@@ -24,7 +24,6 @@ steps:
     projects: '$(solution)'
 - task: DotNetCoreCLI@2
   displayName: 'Test'
-  condition: eq(variables['TestExists'], True)
   inputs:
     command: 'test'
     projects: '**/*[Tt]ests/*.csproj'
