@@ -12,18 +12,23 @@ variables:
 steps:
 - task: NuGetToolInstaller@1
 - task: DotNetCoreCLI@2
+  displayName: 'Restore'
   inputs:
     command: 'restore'
     projects: '$(solution)'
     feedsToUse: 'select'
 - task: DotNetCoreCLI@2
+  displayName: 'Build'
   inputs:
     command: 'build'
     projects: '$(solution)'
 - task: DotNetCoreCLI@2
+  displayName: 'Test'
+  condition: eq(variables['TestExists'], True)
   inputs:
     command: 'test'
-    projects: '$(solution)'
+    projects: '**/*[Tt]ests/*.csproj'
+    arguments: '--configuration ${{ parameters.buildConfiguration }} --collect:"XPlat Code Coverage" --settings $(System.DefaultWorkingDirectory)/${{ parameters.codeCoverageSettingsFullPath }}'
 
 # - task: NuGetCommand@2
 #   inputs:
