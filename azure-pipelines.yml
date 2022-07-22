@@ -1,103 +1,50 @@
 trigger:
 - master
- 
+
+pool:
+  vmImage: 'windows-latest'
+
 variables:
- 
-  # Azure Resource Manager connection created during pipeline creation
-  azureSubscription: 'CloudOps SandBox (64e8b0c5-e7ed-450d-a62d-8dd37014c788)'
-  
-  # Web app name
-  webAppName: 'veron-ibrary'
-  
-  # Resource group
-  resourceGroupName: 'vena-dev'
- 
-  # Environment name
-  environmentName: 'veron-ibrary'
- 
-  # Agent VM image name
-  vmImageName: 'windows-latest'
-  
-stages:
-- stage: Archive
-  displayName: Archive stage
-  jobs:  
-  - job: Archive
-    displayName: Archive
-    pool:
-      vmImage: $(vmImageName)
-    steps:   
-    - task: AzureAppServiceSettings@1
-      inputs:
-        azureSubscription: $(azureSubscription)
-        appName: $(webAppName)
-        resourceGroupName: $(resourceGroupName)
-        appSettings: |
-          [
-            {
-              "name": "SCM_DO_BUILD_DURING_DEPLOYMENT",
-              "value": "true"
-            }
-          ]
-    - task: ArchiveFiles@2
-      displayName: 'Archive files'
-      inputs:
-        rootFolderOrFile: '$(System.DefaultWorkingDirectory)'
-        includeRootFolder: false
-        archiveType: zip
-        archiveFile: $(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip
-        replaceExistingArchive: true
- 
-    - upload: $(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip
-      artifact: drop
- 
-- stage: Deploy
-  displayName: Deploy stage
-  dependsOn: Archive
-  condition: succeeded()
-  jobs:
-  - deployment: Deploy
-    displayName: Deploy
-    environment: $(environmentName)
-    pool: 
-      vmImage: $(vmImageName)
-    strategy:
-      runOnce:
-        deploy:
-          steps:            
-          - task: AzureWebApp@1
-            displayName: 'Azure Web App Deploy: Matt-Test-NodeJS-Deploy'
-            inputs:
-              azureSubscription: $(azureSubscription)
-              appType: webAppLinux
-              appName: $(webAppName)
-              runtimeStack: 'NODE|10.14'
-              package: $(Pipeline.Workspace)/drop/$(Build.BuildId).zip
+  solution: '**/*.sln'
+  buildPlatform: 'Any CPU'
+  buildConfiguration: 'Release'
 
-# pool:
-#   vmImage: 'windows-latest'
-
-# variables:
-#   solution: '**/*.sln'
-#   buildPlatform: 'Any CPU'
-#   buildConfiguration: 'Release'
-
-# steps:
-# - task: NuGetToolInstaller@1
-# - task: DotNetCoreCLI@2
-#   displayName: 'Restore'
-#   inputs:
-#     command: 'restore'
-#     projects: '$(solution)'
-#     feedsToUse: 'select'
-# - task: DotNetCoreCLI@2
-#   displayName: 'Build'
-#   inputs:
-#     command: 'build'
-#     projects: '$(solution)'
-# - task: DotNetCoreCLI@2
-#   displayName: 'Test'
-#   inputs:
-#     command: 'test'
-#     projects: '**/*[Tt]ests/*.csproj'
-#     arguments: '--configuration $(buildConfiguration)'
+steps:
+- task: NuGetToolInstaller@1
+- task: DotNetCoreCLI@2
+  displayName: 'Restore'
+  inputs:
+    command: 'restore'
+    projects: '$(solution)'
+    feedsToUse: 'select'
+- task: DotNetCoreCLI@2
+  displayName: 'Build'
+  inputs:
+    command: 'build'
+    projects: '$(solution)'
+- task: DotNetCoreCLI@2
+  displayName: 'Publish application'
+  inputs:
+    command: 'publish'
+    projects: '$(solution)'
+    arguments: '--output $(Build.ArtifactStagingDirectory)'
+    zipAfterPublish: true
+- task: PublishBuildArtifacts@1
+  displayName: 'Publish application in artifacts'
+  inputs:
+    pathtoPublish: '$(Build.ArtifactStagingDirectory)'
+    artifactName: 'library-api'
+- task: DotNetCoreCLI@2
+  displayName: 'Test'
+  inputs:
+    command: 'test'
+    projects: '**/*[Tt]ests/*.csproj'
+    arguments: '--configuration $(buildConfiguration)'
+- task: AzureRmWebAppDeployment@4
+  displayName: 'Deploy'
+  inputs:
+    ConnectionType: 'AzureRM'
+    azureSubscription: 'CloudOps SandBox (64e8b0c5-e7ed-450d-a62d-8dd37014c788)'
+    appType: 'webApp'
+    WebAppName: 'veron-library'
+    packageForLinux: '$(Build.ArtifactStagingDirectory)/library-api.zip'
