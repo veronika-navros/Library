@@ -12,12 +12,12 @@ public class ServiceBusService : IServiceBusService
     {
         _connectionString = connectionString;
     }
-    
+
     public async Task PutIntoQueue(string queueName, BookAddedMessage message)
     {
         var client = new ServiceBusClient(_connectionString);
         var sender = client.CreateSender(queueName);
-        
+
         try
         {
             var m = new ServiceBusMessage(JsonSerializer.Serialize(message));

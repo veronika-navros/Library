@@ -47,7 +47,7 @@ public class BookService : IBookService
             Url = link
         };
         await _serviceBusService.PutIntoQueue(QueueName, message);
-        
+
         return id;
     }
 }

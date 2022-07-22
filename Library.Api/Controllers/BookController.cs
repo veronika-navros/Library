@@ -27,9 +27,9 @@ public class BookController : ControllerBase
             Link = x.Link
         }));
     }
-    
+
     [HttpPost]
-    public async Task<IActionResult> Post([FromForm]BookAddModel model)
+    public async Task<IActionResult> Post([FromForm] BookAddModel model)
     {
         await _bookService.Insert(new BookAddDto
         {

@@ -1,4 +1,5 @@
 using Library.Data.Entities;
+using Library.Data.Mappings;
 using Microsoft.EntityFrameworkCore;
 
 namespace Library.Data;
@@ -13,7 +14,7 @@ public class LibraryContext : DbContext, ILibraryContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        modelBuilder.Entity<BookEntity>().ToTable("Book");
+        modelBuilder.ApplyConfiguration(new BookConfiguration());
         base.OnModelCreating(modelBuilder);
     }
 }

@@ -4,7 +4,6 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Library.Api.Controllers;
 
-
 [ApiController]
 [Route("api/audit")]
 public class AuditController : ControllerBase

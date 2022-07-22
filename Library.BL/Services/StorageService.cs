@@ -12,6 +12,7 @@ public class StorageService : IStorageService
     {
         _storageConnectionString = storageConnectionString;
     }
+
     public async Task<string> Upload(string fileName, byte[] fileData)
     {
         var blobServiceClient = new BlobServiceClient(_storageConnectionString);
