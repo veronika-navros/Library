@@ -47,4 +47,4 @@ steps:
     azureSubscription: 'CloudOps SandBox (64e8b0c5-e7ed-450d-a62d-8dd37014c788)'
     appType: 'webApp'
     WebAppName: 'veron-library'
-    packageForLinux: '$(Build.ArtifactStagingDirectory)/**/*.zip'
+    packageForLinux: '$(Build.ArtifactStagingDirectory)/*.zip'
