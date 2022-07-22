@@ -16,7 +16,7 @@ variables:
   environmentName: 'veron-library'
  
   # Agent VM image name
-  vmImageName: 'ubuntu-latest'
+  vmImageName: 'windows-latest'
   
 stages:
 - stage: Archive
