@@ -13,7 +13,7 @@ variables:
   resourceGroupName: 'vena-dev'
  
   # Environment name
-  environmentName: 'veron-library'
+  environmentName: 'production'
  
   # Agent VM image name
   vmImageName: 'windows-latest'
