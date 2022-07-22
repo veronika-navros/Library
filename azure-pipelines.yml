@@ -7,13 +7,13 @@ variables:
   azureSubscription: 'github.com_veronika-navros'
   
   # Web app name
-  webAppName: 'veron-library'
+  webAppName: 'Library'
   
   # Resource group
   resourceGroupName: 'vena-dev'
  
   # Environment name
-  environmentName: 'veron-library'
+  environmentName: 'Library'
  
   # Agent VM image name
   vmImageName: 'ubuntu-latest'
