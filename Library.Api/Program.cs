@@ -2,6 +2,7 @@ using Library.BL.Services;
 using Library.Data;
 using Library.Data.Repositories;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging.AzureAppServices;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -19,6 +20,14 @@ builder.Services.AddScoped<IBookService, BookService>();
 builder.Services.AddScoped<IStorageService>(_ => new StorageService(builder.Configuration["BlobConfiguration:StorageConnectionString"]));
 builder.Services.AddScoped<IServiceBusService>(_ => new ServiceBusService(builder.Configuration["BusConfiguration:ConnectionString"]));
 builder.Services.AddScoped<IBookAuditService>(_ => new BookAuditService(builder.Configuration["FunctionConfiguration:BookAuditUrl"], builder.Configuration["FunctionConfiguration:FunctionKey"]));
+
+builder.Logging.AddAzureWebAppDiagnostics();
+builder.Services.Configure<AzureFileLoggerOptions>(options =>
+{
+    options.FileName = "azure-diagnostics-";
+    options.FileSizeLimit = 50 * 1024;
+    options.RetainedFileCountLimit = 5;
+});
 
 var app = builder.Build();
 
