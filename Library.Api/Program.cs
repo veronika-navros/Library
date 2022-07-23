@@ -19,7 +19,7 @@ builder.Services.AddScoped<IBookRepository, BookRepository>();
 builder.Services.AddScoped<IBookService, BookService>();
 builder.Services.AddScoped<IStorageService>(_ => new StorageService(builder.Configuration["BlobConfiguration:StorageConnectionString"]));
 builder.Services.AddScoped<IServiceBusService>(_ => new ServiceBusService(builder.Configuration["BusConfiguration:ConnectionString"]));
-builder.Services.AddScoped<IBookAuditService>(_ => new BookAuditService(builder.Configuration["FunctionConfiguration:BookAuditUrl"], builder.Configuration["FunctionConfiguration:FunctionKey"]));
+builder.Services.AddScoped<IBookAuditService>(_ => new BookAuditService(builder.Configuration["FunctionConfiguration:BookAuditUrl"], Environment.GetEnvironmentVariable("FunctionKey")!));
 
 builder.Logging.AddAzureWebAppDiagnostics();
 builder.Services.Configure<AzureFileLoggerOptions>(options =>
