@@ -28,7 +28,6 @@ builder.Services.Configure<AzureFileLoggerOptions>(options =>
     options.FileSizeLimit = 50 * 1024;
     options.RetainedFileCountLimit = 5;
 });
-builder.Logging.AddConsole();
 
 var app = builder.Build();
 
@@ -38,7 +37,7 @@ app.UseSwaggerUI();
 app.UseHttpsRedirection();
 
 app.UseAuthorization();
-app.Logger.LogInformation("my info");
+
 app.MapControllers();
 app.UseCors(policyBuilder => policyBuilder.AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin());
 app.Run();
