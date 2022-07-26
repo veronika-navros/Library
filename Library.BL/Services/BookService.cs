@@ -46,7 +46,7 @@ public class BookService : IBookService
             Name = bookDto.Name,
             Url = link
         };
-        //await _serviceBusService.PutIntoQueue(QueueName, message);
+        await _serviceBusService.PutIntoQueue(QueueName, message);
 
         return id;
     }
