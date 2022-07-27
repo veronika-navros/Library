@@ -17,7 +17,7 @@ builder.Services.AddDbContext<LibraryContext>(options => options.UseSqlServer(bu
 builder.Services.AddScoped<ILibraryContext, LibraryContext>();
 builder.Services.AddScoped<IBookRepository, BookRepository>();
 builder.Services.AddScoped<IBookService, BookService>();
-builder.Services.AddScoped<IStorageService>(_ => new StorageService(Environment.GetEnvironmentVariable("BlobConfiguration:StorageConnectionString")!));
+builder.Services.AddScoped<IStorageService>(_ => new StorageService(Environment.GetEnvironmentVariable("StorageConnectionString")!));
 builder.Services.AddScoped<IServiceBusService>(_ => new ServiceBusService(Environment.GetEnvironmentVariable("ServiceBusConnection")!));
 builder.Services.AddScoped<IBookAuditService>(_ => new BookAuditService(builder.Configuration["FunctionConfiguration:BookAuditUrl"], Environment.GetEnvironmentVariable("FunctionKey")!));
 
