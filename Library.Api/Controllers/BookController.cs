@@ -21,7 +21,6 @@ public class BookController : ControllerBase
     [HttpGet]
     public IActionResult Get()
     {
-        Log.Information("Log test");
         return Ok(_bookService.GetAll().Select(x => new BookViewModel
         {
             Title = x.Name,

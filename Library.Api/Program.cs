@@ -2,7 +2,6 @@ using Library.BL.Services;
 using Library.Data;
 using Library.Data.Repositories;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging.AzureAppServices;
 using Serilog;
 using Serilog.Events;
 
@@ -24,10 +23,10 @@ builder.Services.AddScoped<IServiceBusService>(_ => new ServiceBusService(Enviro
 builder.Services.AddScoped<IBookAuditService>(_ => new BookAuditService(builder.Configuration["FunctionConfiguration:BookAuditUrl"], Environment.GetEnvironmentVariable("FunctionKey")!));
 
 Log.Logger = new LoggerConfiguration()
-        .MinimumLevel.Verbose()
+        .MinimumLevel.Information()
         .MinimumLevel.Override("Microsoft", LogEventLevel.Error)
         .Enrich.FromLogContext()
-        .WriteTo.AzureAnalytics("47416c81-85ac-480d-a677-daebcbbb740a", "Win/N7KmxWqiDg/3ksb1yOLAN+xLlcbhFd8iIeuonuMBkUobqDnZZFoEBuJo5PeifdZQhW14hppi4RIeKSBVBg==")
+        .WriteTo.AzureAnalytics(Environment.GetEnvironmentVariable("LogAnalyticsWorkspaceId"), Environment.GetEnvironmentVariable("LogAnalyticsAuthId"))
         .CreateLogger();
 builder.Host.UseSerilog();
 
