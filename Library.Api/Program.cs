@@ -3,6 +3,7 @@ using Library.Data;
 using Library.Data.Repositories;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging.AzureAppServices;
+using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -21,13 +22,17 @@ builder.Services.AddScoped<IStorageService>(_ => new StorageService(Environment.
 builder.Services.AddScoped<IServiceBusService>(_ => new ServiceBusService(Environment.GetEnvironmentVariable("ServiceBusConnection")!));
 builder.Services.AddScoped<IBookAuditService>(_ => new BookAuditService(builder.Configuration["FunctionConfiguration:BookAuditUrl"], Environment.GetEnvironmentVariable("FunctionKey")!));
 
-builder.Logging.AddAzureWebAppDiagnostics();
-builder.Services.Configure<AzureFileLoggerOptions>(options =>
-{
-    options.FileName = "azure-diagnostics-";
-    options.FileSizeLimit = 50 * 1024;
-    options.RetainedFileCountLimit = 5;
-});
+// builder.Logging.AddAzureWebAppDiagnostics();
+// builder.Services.Configure<AzureBlobLoggerOptions>(options =>
+// {
+//     options.FileNameFormat = _ => "{Timestamp:yyyy-MM-dd HH:mm:ss zzz} [{Level}] {RequestId}-{SourceContext}: {Message}{NewLine}{Exception}";
+//     options.BlobName = "$logs";
+// });
+
+Log.Logger = new LoggerConfiguration()
+    .WriteTo.AzureAnalytics(workspaceId: "47416c81-85ac-480d-a677-daebcbbb740a", authenticationId: "Win/N7KmxWqiDg/3ksb1yOLAN+xLlcbhFd8iIeuonuMBkUobqDnZZFoEBuJo5PeifdZQhW14hppi4RIeKSBVBg==")
+    .CreateLogger();
+builder.Logging.AddSerilog();
 
 var app = builder.Build();
 
