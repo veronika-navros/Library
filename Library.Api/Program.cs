@@ -4,6 +4,7 @@ using Library.Data.Repositories;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging.AzureAppServices;
 using Serilog;
+using Serilog.Events;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -30,9 +31,16 @@ builder.Services.AddScoped<IBookAuditService>(_ => new BookAuditService(builder.
 // });
 
 Log.Logger = new LoggerConfiguration()
-    .WriteTo.AzureAnalytics(workspaceId: "47416c81-85ac-480d-a677-daebcbbb740a", authenticationId: "Win/N7KmxWqiDg/3ksb1yOLAN+xLlcbhFd8iIeuonuMBkUobqDnZZFoEBuJo5PeifdZQhW14hppi4RIeKSBVBg==")
-    .CreateLogger();
+        .MinimumLevel.Verbose()
+        .MinimumLevel.Override("Microsoft", LogEventLevel.Error)
+        .Enrich.FromLogContext()
+        .WriteTo.AzureAnalytics("47416c81-85ac-480d-a677-daebcbbb740a", "Win/N7KmxWqiDg/3ksb1yOLAN+xLlcbhFd8iIeuonuMBkUobqDnZZFoEBuJo5PeifdZQhW14hppi4RIeKSBVBg==", "veron-library-logs")
+        .WriteTo.Console()
+        .CreateLogger();
 builder.Logging.AddSerilog();
+builder.Host.UseSerilog();
+// builder.Host.UseSerilog((ctx, lc) => lc
+//         .ReadFrom.Configuration(ctx.Configuration));
 
 var app = builder.Build();
 
@@ -42,6 +50,8 @@ app.UseSwaggerUI();
 app.UseHttpsRedirection();
 
 app.UseAuthorization();
+
+app.UseSerilogRequestLogging();
 
 app.MapControllers();
 app.UseCors(policyBuilder => policyBuilder.AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin());

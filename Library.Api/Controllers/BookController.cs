@@ -3,6 +3,7 @@ using Library.Api.Models;
 using Library.BL.Dtos;
 using Library.BL.Services;
 using Microsoft.AspNetCore.Mvc;
+using Serilog;
 
 namespace Library.Api.Controllers;
 
@@ -20,6 +21,7 @@ public class BookController : ControllerBase
     [HttpGet]
     public IActionResult Get()
     {
+        Log.Information("Log test");
         return Ok(_bookService.GetAll().Select(x => new BookViewModel
         {
             Title = x.Name,
