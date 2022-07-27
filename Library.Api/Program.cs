@@ -31,14 +31,19 @@ builder.Services.AddScoped<IBookAuditService>(_ => new BookAuditService(builder.
 // });
 
 Log.Logger = new LoggerConfiguration()
-        .MinimumLevel.Verbose()
-        .MinimumLevel.Override("Microsoft", LogEventLevel.Error)
-        .Enrich.FromLogContext()
-        .WriteTo.AzureAnalytics("47416c81-85ac-480d-a677-daebcbbb740a", "Win/N7KmxWqiDg/3ksb1yOLAN+xLlcbhFd8iIeuonuMBkUobqDnZZFoEBuJo5PeifdZQhW14hppi4RIeKSBVBg==", "veron-library")
-        .WriteTo.Console()
+        .WriteTo.AzureAnalytics(workspaceId: "47416c81-85ac-480d-a677-daebcbbb740a", authenticationId: "Win/N7KmxWqiDg/3ksb1yOLAN+xLlcbhFd8iIeuonuMBkUobqDnZZFoEBuJo5PeifdZQhW14hppi4RIeKSBVBg==")
         .CreateLogger();
 builder.Logging.AddSerilog();
-builder.Host.UseSerilog();
+
+// Log.Logger = new LoggerConfiguration()
+//         .MinimumLevel.Verbose()
+//         .MinimumLevel.Override("Microsoft", LogEventLevel.Error)
+//         .Enrich.FromLogContext()
+//         .WriteTo.AzureAnalytics("47416c81-85ac-480d-a677-daebcbbb740a", "Win/N7KmxWqiDg/3ksb1yOLAN+xLlcbhFd8iIeuonuMBkUobqDnZZFoEBuJo5PeifdZQhW14hppi4RIeKSBVBg==", "veron-library")
+//         .WriteTo.Console()
+//         .CreateLogger();
+// builder.Logging.AddSerilog();
+// builder.Host.UseSerilog();
 // builder.Host.UseSerilog((ctx, lc) => lc
 //         .ReadFrom.Configuration(ctx.Configuration));
 
