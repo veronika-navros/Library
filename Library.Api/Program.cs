@@ -43,7 +43,7 @@ builder.Logging.AddSerilog();
 //         .WriteTo.Console()
 //         .CreateLogger();
 //builder.Logging.AddSerilog();
-//builder.Host.UseSerilog();
+builder.Host.UseSerilog();
 // builder.Host.UseSerilog((ctx, lc) => lc
 //         .ReadFrom.Configuration(ctx.Configuration));
 
