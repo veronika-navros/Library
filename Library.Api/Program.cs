@@ -23,32 +23,13 @@ builder.Services.AddScoped<IStorageService>(_ => new StorageService(Environment.
 builder.Services.AddScoped<IServiceBusService>(_ => new ServiceBusService(Environment.GetEnvironmentVariable("ServiceBusConnection")!));
 builder.Services.AddScoped<IBookAuditService>(_ => new BookAuditService(builder.Configuration["FunctionConfiguration:BookAuditUrl"], Environment.GetEnvironmentVariable("FunctionKey")!));
 
-// builder.Logging.AddAzureWebAppDiagnostics();
-// builder.Services.Configure<AzureBlobLoggerOptions>(options =>
-// {
-//     options.FileNameFormat = _ => "{Timestamp:yyyy-MM-dd HH:mm:ss zzz} [{Level}] {RequestId}-{SourceContext}: {Message}{NewLine}{Exception}";
-//     options.BlobName = "$logs";
-// });
-
 Log.Logger = new LoggerConfiguration()
         .MinimumLevel.Verbose()
         .MinimumLevel.Override("Microsoft", LogEventLevel.Error)
         .Enrich.FromLogContext()
         .WriteTo.AzureAnalytics("47416c81-85ac-480d-a677-daebcbbb740a", "Win/N7KmxWqiDg/3ksb1yOLAN+xLlcbhFd8iIeuonuMBkUobqDnZZFoEBuJo5PeifdZQhW14hppi4RIeKSBVBg==")
         .CreateLogger();
-builder.Logging.AddSerilog();
-
-// Log.Logger = new LoggerConfiguration()
-//         .MinimumLevel.Verbose()
-//         .MinimumLevel.Override("Microsoft", LogEventLevel.Error)
-//         .Enrich.FromLogContext()
-//         .WriteTo.AzureAnalytics("47416c81-85ac-480d-a677-daebcbbb740a", "Win/N7KmxWqiDg/3ksb1yOLAN+xLlcbhFd8iIeuonuMBkUobqDnZZFoEBuJo5PeifdZQhW14hppi4RIeKSBVBg==", "veron-library")
-//         .WriteTo.Console()
-//         .CreateLogger();
-//builder.Logging.AddSerilog();
 builder.Host.UseSerilog();
-// builder.Host.UseSerilog((ctx, lc) => lc
-//         .ReadFrom.Configuration(ctx.Configuration));
 
 var app = builder.Build();
 
